@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"io/ioutil"
+	"net/http"
 )
 
 var config configStruct
@@ -24,7 +25,6 @@ func ReadConfig() error {
 		return err
 	}
 
-	fmt.Println(config)
 	return err
 }
 
@@ -61,18 +61,20 @@ func Start() {
 }
 
 func messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
-	if m.Content == "" {
-		chanMessages, _ := s.ChannelMessages(m.ChannelID, 1, "", "", m.ID)
-		m.Content = chanMessages[0].Content
-	}
-	fmt.Println("message:", m.Content)
 
 	if m.Author.ID == BotId {
 		return
 	}
-	if true {
-		_, _ = s.ChannelMessageSend(m.ChannelID, "pong")
+
+	if m.Content == config.BotPrefix+"upstatus" {
+		cloudResponse, _ := http.Get("https://cloud.sistemaslenox.com.ar")
+		body, _ := ioutil.ReadAll(cloudResponse.Body)
+		testResponse, _ := http.Get("https://test.sistemaslenox.com.ar")
+		testBody, _ := ioutil.ReadAll(testResponse.Body)
+        _, _ = s.ChannelMessageSend(m.ChannelID, string(body) + "\n" + string(testBody))
 	}
+
+	_, _ = s.ChannelMessageSend(m.ChannelID, "pong")
 }
 
 func main() {
