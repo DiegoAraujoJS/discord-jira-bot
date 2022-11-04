@@ -61,6 +61,13 @@ func Start() {
 	fmt.Println("bot is running")
 }
 
+var servers = map[string]string{
+	"cloud":            "https://cloud.sistemaslenox.com",
+	"ADMS cloud":       "http://cloud.sistemaslenox.com:48971/iclock/ping?SN=COVS220960036",
+	"PWA cloud":        "https://cloud.sistemaslenox.com/mobile",
+	"PWA server cloud": "https://cloud.sistemaslenox.com:48970/api",
+}
+
 func messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	if m.Author.ID == BotId {
@@ -76,12 +83,6 @@ func messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	if m.Content == config.BotPrefix+"upstatus" {
 		var response = ""
-		var servers = map[string]string{
-			"cloud":            "https://cloud.sistemaslenox.com",
-			"ADMS cloud":       "http://cloud.sistemaslenox.com:48971/iclock/ping?SN=COVS220960036",
-			"PWA cloud":        "https://cloud.sistemaslenox.com/mobile",
-			"PWA server cloud": "https://cloud.sistemaslenox.com:48970/api",
-		}
 
 		for k, v := range servers {
 			_, err := client.Get(v)
