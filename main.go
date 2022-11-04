@@ -6,6 +6,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"io/ioutil"
 	"net/http"
+	"time"
 )
 
 var config configStruct
@@ -66,22 +67,40 @@ func messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-	if m.Content == config.BotPrefix+"upstatus" {
-		cloudResponse, _ := http.Get("https://cloud.sistemaslenox.com.ar")
-		body, _ := ioutil.ReadAll(cloudResponse.Body)
-		testResponse, _ := http.Get("https://test.sistemaslenox.com.ar")
-		testBody, _ := ioutil.ReadAll(testResponse.Body)
-        _, _ = s.ChannelMessageSend(m.ChannelID, string(body) + "\n" + string(testBody))
+	client := &http.Client{
+		CheckRedirect: func(req *http.Request, via []*http.Request) error {
+			return http.ErrUseLastResponse
+		},
+		Timeout: 5 * time.Second,
 	}
 
-	_, _ = s.ChannelMessageSend(m.ChannelID, "pong")
+	if m.Content == config.BotPrefix+"upstatus" {
+		var response = ""
+		var servers = map[string]string{
+			"cloud":            "https://cloud.sistemaslenox.com",
+			"ADMS cloud":       "http://cloud.sistemaslenox.com:48971/iclock/ping?SN=COVS220960036",
+			"PWA cloud":        "https://cloud.sistemaslenox.com/mobile",
+			"PWA server cloud": "https://cloud.sistemaslenox.com:48970/api",
+		}
+
+		for k, v := range servers {
+			_, err := client.Get(v)
+			if err != nil {
+				response += "status " + k + " " + v + ": down\n"
+			} else {
+				response += "status " + k + " " + v + ": ok\n"
+			}
+		}
+
+		_, _ = s.ChannelMessageSend(m.ChannelID, response)
+		return
+	}
 }
 
 func main() {
 	err := ReadConfig()
 
 	if err != nil {
-		fmt.Println("main ", err.Error())
 		return
 	}
 
