@@ -33,6 +33,7 @@ func Start() {
 	BotId = user.ID
 
 	goBot.AddHandler(commands.HealthCheck(BotId, config, servers))
+	goBot.AddHandler(commands.JiraExpandTicket(BotId, config))
 
 	err = goBot.Open()
 
@@ -46,13 +47,13 @@ func Start() {
 // Mover estos valores a un json y agregarlo al gitignore.
 
 func main() {
-	err := utils.ReadConfig("", &config)
+	err := utils.ReadConfig("./config.json", &config)
 
 	if err != nil {
 		return
 	}
 
-	err = utils.ReadConfig("", &servers)
+	err = utils.ReadConfig("./healthcheck_routes.json", &servers)
 
 	if err != nil {
 		return
