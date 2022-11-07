@@ -15,7 +15,7 @@ func getJiraTicket(ticket_id string, config ConfigStruct) *http.Response {
 
 	client := &http.Client{}
 
-    req, _ := http.NewRequest("GET", "https://" + config.Jira_user + ":" + config.Jira_token + "@lenox-test.atlassian.net/rest/api/2/issue/LW-"+ticket_id, nil)
+	req, _ := http.NewRequest("GET", "https://"+config.Jira_user+":"+config.Jira_token+"@lenox-test.atlassian.net/rest/api/2/issue/LW-"+ticket_id, nil)
 	req.Header.Set("Content-Type", "application/json")
 
 	response, err := client.Do(req)
@@ -42,6 +42,10 @@ var jiraRegexp = regexp.MustCompile(`(LW-|ticket )\d+`)
 func JiraExpandTicket(BotId string, config ConfigStruct) func(s *discordgo.Session, m *discordgo.MessageCreate) {
 	return func(s *discordgo.Session, m *discordgo.MessageCreate) {
 
+		if m.Author.ID == BotId {
+			return
+		}
+
 		match := jiraRegexp.Find([]byte(m.Content))
 
 		fmt.Println("jira -> ", m.Content, string(match))
@@ -50,9 +54,9 @@ func JiraExpandTicket(BotId string, config ConfigStruct) func(s *discordgo.Sessi
 
 			split := strings.Split(string(match), "-")
 
-            if len(split) == 1 {
-			    split = strings.Split(string(match), " ")
-            }
+			if len(split) == 1 {
+				split = strings.Split(string(match), " ")
+			}
 
 			ticket_id := split[len(split)-1]
 
@@ -64,7 +68,7 @@ func JiraExpandTicket(BotId string, config ConfigStruct) func(s *discordgo.Sessi
 
 			json.Unmarshal(body, &json_body)
 
-			_, _ = s.ChannelMessageSend(m.ChannelID, json_body.Fields.Summary+"\n\n"+json_body.Fields.Description+"\n\n"+json_body.Fields.Creator.DisplayName)
+			_, _ = s.ChannelMessageSend(m.ChannelID, "https://lenox-test.atlassian.net/browse/LW-"+ticket_id+"\n"+json_body.Fields.Summary+"\n\n"+json_body.Fields.Description+"\n\n"+json_body.Fields.Creator.DisplayName)
 		}
 	}
 }
