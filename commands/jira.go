@@ -2,7 +2,6 @@ package commands
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"io/ioutil"
 	"log"
@@ -15,7 +14,7 @@ func getJiraTicket(ticket_id string) *http.Response {
 
 	client := &http.Client{}
 
-	req, _ := http.NewRequest("GET", "https://diego@relojeslenox.com.ar:y2shQHtPPTIxR4BaiZxPC389@pruebaslenox.atlassian.net/rest/api/2/issue/PRUEB-"+ticket_id, nil)
+	req, _ := http.NewRequest("GET", "https://diego@relojeslenox.com.ar:eTnxIy2beD5Pivl3mvcuD58F@pruebaslenox.atlassian.net/rest/api/2/issue/PRUEB-"+ticket_id, nil)
 	req.Header.Set("Content-Type", "application/json")
 
 	response, err := client.Do(req)
@@ -31,7 +30,11 @@ var jiraRegexp = regexp.MustCompile(`PRUEB-\d+`)
 
 type jiraResponse struct {
 	Fields struct {
-		Summary string `json:"summary"`
+		Summary     string `json:"summary"`
+		Description string `json:"description"`
+		Creator     struct {
+			DisplayName string `json:"displayName"`
+		} `json:"creator"`
 	} `json:"fields"`
 }
 
@@ -42,7 +45,7 @@ func JiraExpandTicket(BotId string, config ConfigStruct) func(s *discordgo.Sessi
 
 		if match != nil {
 
-			split := strings.Split(m.Content, "-")
+			split := strings.Split(string(match), "-")
 
 			ticket_id := split[len(split)-1]
 
@@ -54,9 +57,7 @@ func JiraExpandTicket(BotId string, config ConfigStruct) func(s *discordgo.Sessi
 
 			json.Unmarshal(body, &json_body)
 
-			fmt.Println(json_body.Fields)
-
-			_, _ = s.ChannelMessageSend(m.ChannelID, json_body.Fields.Summary)
+			_, _ = s.ChannelMessageSend(m.ChannelID, json_body.Fields.Summary+"\n\n"+json_body.Fields.Description+"\n\n"+json_body.Fields.Creator.DisplayName)
 		}
 	}
 }
