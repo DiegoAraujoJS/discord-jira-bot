@@ -10,8 +10,10 @@ import (
 )
 
 type ConfigStruct struct {
-	Token     string `json:"Token"`
-	BotPrefix string `json:"BotPrefix"`
+	Token      string `json:"Token"`
+	BotPrefix  string `json:"BotPrefix"`
+	Jira_token string `json:"Jira_token"`
+	Jira_user  string `json:"Jira_user"`
 }
 
 func HealthCheck(BotId string, config ConfigStruct, servers map[string]string) func(s *discordgo.Session, m *discordgo.MessageCreate) {
@@ -37,8 +39,8 @@ func HealthCheck(BotId string, config ConfigStruct, servers map[string]string) f
 
 			for k, v := range servers {
 				wg.Add(1)
-				then := time.Now()
-				go func(k string, v string, then time.Time) {
+				go func(k string, v string) {
+					then := time.Now()
 					_, err := client.Get(v)
 					time_elapsed := time.Since(then)
 					if err != nil {
@@ -48,7 +50,7 @@ func HealthCheck(BotId string, config ConfigStruct, servers map[string]string) f
 					}
 					wg.Done()
 
-				}(k, v, then)
+				}(k, v)
 			}
 
 			wg.Wait()

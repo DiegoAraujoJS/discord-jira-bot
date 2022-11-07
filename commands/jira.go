@@ -2,6 +2,7 @@ package commands
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"io/ioutil"
 	"log"
@@ -10,11 +11,11 @@ import (
 	"strings"
 )
 
-func getJiraTicket(ticket_id string) *http.Response {
+func getJiraTicket(ticket_id string, config ConfigStruct) *http.Response {
 
 	client := &http.Client{}
 
-	req, _ := http.NewRequest("GET", "https://diego@relojeslenox.com.ar:eTnxIy2beD5Pivl3mvcuD58F@pruebaslenox.atlassian.net/rest/api/2/issue/PRUEB-"+ticket_id, nil)
+    req, _ := http.NewRequest("GET", "https://" + config.Jira_user + ":" + config.Jira_token + "@lenox-test.atlassian.net/rest/api/2/issue/LW-"+ticket_id, nil)
 	req.Header.Set("Content-Type", "application/json")
 
 	response, err := client.Do(req)
@@ -26,8 +27,6 @@ func getJiraTicket(ticket_id string) *http.Response {
 	return response
 }
 
-var jiraRegexp = regexp.MustCompile(`PRUEB-\d+`)
-
 type jiraResponse struct {
 	Fields struct {
 		Summary     string `json:"summary"`
@@ -38,18 +37,26 @@ type jiraResponse struct {
 	} `json:"fields"`
 }
 
+var jiraRegexp = regexp.MustCompile(`(LW-|ticket )\d+`)
+
 func JiraExpandTicket(BotId string, config ConfigStruct) func(s *discordgo.Session, m *discordgo.MessageCreate) {
 	return func(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 		match := jiraRegexp.Find([]byte(m.Content))
 
+		fmt.Println("jira -> ", m.Content, string(match))
+
 		if match != nil {
 
 			split := strings.Split(string(match), "-")
 
+            if len(split) == 1 {
+			    split = strings.Split(string(match), " ")
+            }
+
 			ticket_id := split[len(split)-1]
 
-			response := getJiraTicket(ticket_id)
+			response := getJiraTicket(ticket_id, config)
 
 			var json_body jiraResponse
 

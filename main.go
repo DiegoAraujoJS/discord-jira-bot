@@ -31,7 +31,6 @@ func Start() {
 	}
 
 	BotId = user.ID
-
 	goBot.AddHandler(commands.HealthCheck(BotId, config, servers))
 	goBot.AddHandler(commands.JiraExpandTicket(BotId, config))
 
