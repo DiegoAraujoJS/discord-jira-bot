@@ -33,6 +33,7 @@ func Start() {
 	BotId = user.ID
 	goBot.AddHandler(commands.HealthCheck(BotId, config, servers))
 	goBot.AddHandler(commands.JiraExpandTicket(BotId, config))
+    goBot.AddHandler(commands.ClockHealth(BotId))
 
 	err = goBot.Open()
 
