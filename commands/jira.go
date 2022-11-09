@@ -37,7 +37,7 @@ type jiraResponse struct {
 	} `json:"fields"`
 }
 
-var jiraRegexp = regexp.MustCompile(`(LW-|ticket )\d+`)
+var jiraRegexp = regexp.MustCompile(`(?i)(LW-|ticket |LW )\d+`)
 
 func JiraExpandTicket(BotId string, config ConfigStruct) func(s *discordgo.Session, m *discordgo.MessageCreate) {
 	return func(s *discordgo.Session, m *discordgo.MessageCreate) {
