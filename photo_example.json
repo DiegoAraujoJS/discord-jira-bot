@@ -1,0 +1,366 @@
+HTTP/2 200 
+date: Tue,
+15 Nov 2022 16: 06: 54 GMT
+content-type: application/json;charset=UTF-8
+server: AtlassianEdge
+timing-allow-origin: *
+x-arequestid: 7d8f0b5e440ea503a8a3de410866d698
+set-cookie: atlassian.xsrf.token=f3827d60-72fc-4805-af40-e1f7c4270863_798e08164c3a3d783bf8fddf48291bfcbb234c80_lin; path=/; SameSite=None; Secure
+x-aaccountid: 5e97077e63acd40c3f93c469
+cache-control: no-cache, no-store, no-transform
+vary: Accept-Encoding
+expect-ct: report-uri="https://web-security-reports.services.atlassian.com/expect-ct-report/atlassian-proxy", max-age=86400
+strict-transport-security: max-age=63072000; preload
+x-content-type-options: nosniff
+x-xss-protection: 1; mode=block
+atl-traceid: ea1128001e2d5a75
+report-to: {
+    "endpoints": [
+        {
+            "url": "https://dz8aopenkvv6s.cloudfront.net"
+        }
+    ],
+    "group": "endpoint-1",
+    "include_subdomains": true,
+    "max_age": 600
+}
+nel: {
+    "failure_fraction": 0.001,
+    "include_subdomains": true,
+    "max_age": 600,
+    "report_to": "endpoint-1"
+}
+
+{
+    "expand": "renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations,customfield_10010.requestTypePractice",
+    "id": "11205",
+    "self": "https://lenox-test.atlassian.net/rest/api/2/issue/11205",
+    "key": "LW-1000",
+    "fields": {
+        "statuscategorychangedate": "2022-09-07T15:22:02.400-0300",
+        "issuetype": {
+            "self": "https://lenox-test.atlassian.net/rest/api/2/issuetype/10009",
+            "id": "10009",
+            "description": "A problem or error.",
+            "iconUrl": "https://lenox-test.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10304?size=medium",
+            "name": "Reporte de Error",
+            "subtask": false,
+            "avatarId": 10304,
+            "hierarchyLevel": 0
+        },
+        "customfield_10070": null,
+        "customfield_10071": {
+            "self": "https://lenox-test.atlassian.net/rest/api/2/customFieldOption/10134",
+            "value": "0",
+            "id": "10134"
+        },
+        "timespent": null,
+        "project": {
+            "self": "https://lenox-test.atlassian.net/rest/api/2/project/10003",
+            "id": "10003",
+            "key": "LW",
+            "name": "Lenox WEB",
+            "projectTypeKey": "software",
+            "simplified": false,
+            "avatarUrls": {
+                "48x48": "https://lenox-test.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10563",
+                "24x24": "https://lenox-test.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10563?size=small",
+                "16x16": "https://lenox-test.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10563?size=xsmall",
+                "32x32": "https://lenox-test.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10563?size=medium"
+            },
+            "projectCategory": {
+                "self": "https://lenox-test.atlassian.net/rest/api/2/projectCategory/10000",
+                "id": "10000",
+                "description": "",
+                "name": "Software"
+            }
+        },
+        "fixVersions": [
+            {
+                "self": "https://lenox-test.atlassian.net/rest/api/2/version/10086",
+                "id": "10086",
+                "description": "",
+                "name": "8.5.5.3",
+                "archived": false,
+                "released": true,
+                "releaseDate": "2022-11-09"
+            }
+        ],
+        "aggregatetimespent": null,
+        "resolution": null,
+        "resolutiondate": null,
+        "workratio": -1,
+        "issuerestriction": {
+            "issuerestrictions": {},
+            "shouldDisplay": false
+        },
+        "watches": {
+            "self": "https://lenox-test.atlassian.net/rest/api/2/issue/LW-1000/watchers",
+            "watchCount": 2,
+            "isWatching": false
+        },
+        "lastViewed": null,
+        "customfield_10060": null,
+        "created": "2022-09-05T14:45:41.100-0300",
+        "customfield_10061": null,
+        "customfield_10062": null,
+        "customfield_10063": null,
+        "customfield_10020": null,
+        "customfield_10064": null,
+        "customfield_10021": null,
+        "customfield_10065": null,
+        "customfield_10022": null,
+        "customfield_10066": null,
+        "customfield_10067": null,
+        "priority": {
+            "self": "https://lenox-test.atlassian.net/rest/api/2/priority/2",
+            "iconUrl": "https://lenox-test.atlassian.net/images/icons/priorities/highest.svg",
+            "name": "Alta",
+            "id": "2"
+        },
+        "customfield_10023": null,
+        "customfield_10024": "2022-09-05T14:50:09.061-0300",
+        "customfield_10025": null,
+        "labels": [],
+        "customfield_10016": null,
+        "customfield_10017": null,
+        "customfield_10018": {
+            "hasEpicLinkFieldDependency": false,
+            "showField": false,
+            "nonEditableReason": {
+                "reason": "PLUGIN_LICENSE_ERROR",
+                "message": "El enlace principal solo está disponible para los usuarios de Jira Premium."
+            }
+        },
+        "customfield_10019": "0|i006qh:",
+        "aggregatetimeoriginalestimate": null,
+        "timeestimate": null,
+        "versions": [
+            {
+                "self": "https://lenox-test.atlassian.net/rest/api/2/version/10082",
+                "id": "10082",
+                "description": "",
+                "name": "8.5.4",
+                "archived": true,
+                "released": false
+            }
+        ],
+        "issuelinks": [],
+        "assignee": {
+            "self": "https://lenox-test.atlassian.net/rest/api/2/user?accountId=628d127ff2ee4a0069df6a3e",
+            "accountId": "628d127ff2ee4a0069df6a3e",
+            "avatarUrls": {
+                "48x48": "https://secure.gravatar.com/avatar/3d923ab0ea9c72987529fb2403e59fab?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FMR-1.png",
+                "24x24": "https://secure.gravatar.com/avatar/3d923ab0ea9c72987529fb2403e59fab?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FMR-1.png",
+                "16x16": "https://secure.gravatar.com/avatar/3d923ab0ea9c72987529fb2403e59fab?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FMR-1.png",
+                "32x32": "https://secure.gravatar.com/avatar/3d923ab0ea9c72987529fb2403e59fab?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FMR-1.png"
+            },
+            "displayName": "Mauro Martín Ruiz",
+            "active": true,
+            "timeZone": "America/Argentina/Buenos_Aires",
+            "accountType": "atlassian"
+        },
+        "updated": "2022-11-02T12:27:26.786-0300",
+        "status": {
+            "self": "https://lenox-test.atlassian.net/rest/api/2/status/5",
+            "description": "Se ha indicado una resolución, que está a la espera de verificación por el informador de la misma. A partir de aquí las incidencia son reabiertas, o cerradas.",
+            "iconUrl": "https://lenox-test.atlassian.net/images/icons/statuses/resolved.png",
+            "name": "Resuelta",
+            "id": "5",
+            "statusCategory": {
+                "self": "https://lenox-test.atlassian.net/rest/api/2/statuscategory/3",
+                "id": 3,
+                "key": "done",
+                "colorName": "green",
+                "name": "Listo"
+            }
+        },
+        "components": [
+            {
+                "self": "https://lenox-test.atlassian.net/rest/api/2/component/10013",
+                "id": "10013",
+                "name": "UX"
+            }
+        ],
+        "customfield_10051": [
+            {
+                "self": "https://lenox-test.atlassian.net/rest/api/2/customFieldOption/10107",
+                "value": "Offline",
+                "id": "10107"
+            }
+        ],
+        "timeoriginalestimate": null,
+        "description": "La lista de sectores al agregar un empleado debe figurar en orden alfabético \n\n!image-20220905-174503.png|width=541,height=434!",
+        "customfield_10053": null,
+        "customfield_10010": null,
+        "customfield_10054": null,
+        "customfield_10055": null,
+        "customfield_10056": null,
+        "customfield_10057": [],
+        "customfield_10014": null,
+        "customfield_10058": null,
+        "customfield_10015": "2022-09-05",
+        "timetracking": {},
+        "customfield_10059": {
+            "self": "https://lenox-test.atlassian.net/rest/api/2/customFieldOption/10123",
+            "value": "Productiva",
+            "id": "10123"
+        },
+        "customfield_10005": null,
+        "customfield_10049": {
+            "self": "https://lenox-test.atlassian.net/rest/api/2/customFieldOption/10101",
+            "value": "UX",
+            "id": "10101"
+        },
+        "customfield_10006": null,
+        "customfield_10007": null,
+        "security": null,
+        "customfield_10008": null,
+        "attachment": [
+            {
+                "self": "https://lenox-test.atlassian.net/rest/api/2/attachment/10603",
+                "id": "10603",
+                "filename": "image-20220905-174503.png",
+                "author": {
+                    "self": "https://lenox-test.atlassian.net/rest/api/2/user?accountId=5e97077e63acd40c3f93c469",
+                    "accountId": "5e97077e63acd40c3f93c469",
+                    "emailAddress": "agustin@relojeslenox.com.ar",
+                    "avatarUrls": {
+                        "48x48": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/5e97077e63acd40c3f93c469/695bde44-c2c8-4469-be0c-be65482e95fa/48",
+                        "24x24": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/5e97077e63acd40c3f93c469/695bde44-c2c8-4469-be0c-be65482e95fa/24",
+                        "16x16": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/5e97077e63acd40c3f93c469/695bde44-c2c8-4469-be0c-be65482e95fa/16",
+                        "32x32": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/5e97077e63acd40c3f93c469/695bde44-c2c8-4469-be0c-be65482e95fa/32"
+                    },
+                    "displayName": "Agustín Gimenez",
+                    "active": true,
+                    "timeZone": "America/Buenos_Aires",
+                    "accountType": "atlassian"
+                },
+                "created": "2022-09-05T14:45:41.321-0300",
+                "size": 17657,
+                "mimeType": "image/png",
+                "content": "https://lenox-test.atlassian.net/rest/api/2/attachment/content/10603",
+                "thumbnail": "https://lenox-test.atlassian.net/rest/api/2/attachment/thumbnail/10603"
+            }
+        ],
+        "customfield_10009": null,
+        "aggregatetimeestimate": null,
+        "summary": "Orden de Sectores",
+        "creator": {
+            "self": "https://lenox-test.atlassian.net/rest/api/2/user?accountId=5e97077e63acd40c3f93c469",
+            "accountId": "5e97077e63acd40c3f93c469",
+            "emailAddress": "agustin@relojeslenox.com.ar",
+            "avatarUrls": {
+                "48x48": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/5e97077e63acd40c3f93c469/695bde44-c2c8-4469-be0c-be65482e95fa/48",
+                "24x24": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/5e97077e63acd40c3f93c469/695bde44-c2c8-4469-be0c-be65482e95fa/24",
+                "16x16": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/5e97077e63acd40c3f93c469/695bde44-c2c8-4469-be0c-be65482e95fa/16",
+                "32x32": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/5e97077e63acd40c3f93c469/695bde44-c2c8-4469-be0c-be65482e95fa/32"
+            },
+            "displayName": "Agustín Gimenez",
+            "active": true,
+            "timeZone": "America/Buenos_Aires",
+            "accountType": "atlassian"
+        },
+        "subtasks": [],
+        "customfield_10040": {
+            "self": "https://lenox-test.atlassian.net/rest/api/2/customFieldOption/10058",
+            "value": "Empleados",
+            "id": "10058"
+        },
+        "customfield_10041": null,
+        "customfield_10042": {
+            "self": "https://lenox-test.atlassian.net/rest/api/2/customFieldOption/10091",
+            "value": "Si",
+            "id": "10091"
+        },
+        "customfield_10043": null,
+        "reporter": {
+            "self": "https://lenox-test.atlassian.net/rest/api/2/user?accountId=5e97077e63acd40c3f93c469",
+            "accountId": "5e97077e63acd40c3f93c469",
+            "emailAddress": "agustin@relojeslenox.com.ar",
+            "avatarUrls": {
+                "48x48": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/5e97077e63acd40c3f93c469/695bde44-c2c8-4469-be0c-be65482e95fa/48",
+                "24x24": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/5e97077e63acd40c3f93c469/695bde44-c2c8-4469-be0c-be65482e95fa/24",
+                "16x16": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/5e97077e63acd40c3f93c469/695bde44-c2c8-4469-be0c-be65482e95fa/16",
+                "32x32": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/5e97077e63acd40c3f93c469/695bde44-c2c8-4469-be0c-be65482e95fa/32"
+            },
+            "displayName": "Agustín Gimenez",
+            "active": true,
+            "timeZone": "America/Buenos_Aires",
+            "accountType": "atlassian"
+        },
+        "aggregateprogress": {
+            "progress": 0,
+            "total": 0
+        },
+        "customfield_10044": null,
+        "customfield_10000": "{}",
+        "customfield_10045": "Municipalidad de san miguel",
+        "customfield_10001": null,
+        "customfield_10002": null,
+        "customfield_10003": null,
+        "customfield_10004": null,
+        "customfield_10039": null,
+        "environment": null,
+        "duedate": null,
+        "progress": {
+            "progress": 0,
+            "total": 0
+        },
+        "votes": {
+            "self": "https://lenox-test.atlassian.net/rest/api/2/issue/LW-1000/votes",
+            "votes": 0,
+            "hasVoted": false
+        },
+        "comment": {
+            "comments": [
+                {
+                    "self": "https://lenox-test.atlassian.net/rest/api/2/issue/11205/comment/10689",
+                    "id": "10689",
+                    "author": {
+                        "self": "https://lenox-test.atlassian.net/rest/api/2/user?accountId=70121%3Aaef99d77-37ec-4100-ab75-5c401fb2ae2f",
+                        "accountId": "70121:aef99d77-37ec-4100-ab75-5c401fb2ae2f",
+                        "avatarUrls": {
+                            "48x48": "https://secure.gravatar.com/avatar/9e5f79c6cbcbbc11dc656a03c3db37c9?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FIT-4.png",
+                            "24x24": "https://secure.gravatar.com/avatar/9e5f79c6cbcbbc11dc656a03c3db37c9?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FIT-4.png",
+                            "16x16": "https://secure.gravatar.com/avatar/9e5f79c6cbcbbc11dc656a03c3db37c9?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FIT-4.png",
+                            "32x32": "https://secure.gravatar.com/avatar/9e5f79c6cbcbbc11dc656a03c3db37c9?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FIT-4.png"
+                        },
+                        "displayName": "ivan Tenensoff",
+                        "active": true,
+                        "timeZone": "America/Buenos_Aires",
+                        "accountType": "atlassian"
+                    },
+                    "body": "[~accountid:5e97077e63acd40c3f93c469] esto es de prioridad baja ",
+                    "updateAuthor": {
+                        "self": "https://lenox-test.atlassian.net/rest/api/2/user?accountId=70121%3Aaef99d77-37ec-4100-ab75-5c401fb2ae2f",
+                        "accountId": "70121:aef99d77-37ec-4100-ab75-5c401fb2ae2f",
+                        "avatarUrls": {
+                            "48x48": "https://secure.gravatar.com/avatar/9e5f79c6cbcbbc11dc656a03c3db37c9?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FIT-4.png",
+                            "24x24": "https://secure.gravatar.com/avatar/9e5f79c6cbcbbc11dc656a03c3db37c9?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FIT-4.png",
+                            "16x16": "https://secure.gravatar.com/avatar/9e5f79c6cbcbbc11dc656a03c3db37c9?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FIT-4.png",
+                            "32x32": "https://secure.gravatar.com/avatar/9e5f79c6cbcbbc11dc656a03c3db37c9?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FIT-4.png"
+                        },
+                        "displayName": "ivan Tenensoff",
+                        "active": true,
+                        "timeZone": "America/Buenos_Aires",
+                        "accountType": "atlassian"
+                    },
+                    "created": "2022-09-05T14:50:09.061-0300",
+                    "updated": "2022-09-05T14:50:09.061-0300",
+                    "jsdPublic": true
+                }
+            ],
+            "self": "https://lenox-test.atlassian.net/rest/api/2/issue/11205/comment",
+            "maxResults": 1,
+            "total": 1,
+            "startAt": 0
+        },
+        "worklog": {
+            "startAt": 0,
+            "maxResults": 20,
+            "total": 0,
+            "worklogs": []
+        }
+    }
+}
