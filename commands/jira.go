@@ -55,8 +55,8 @@ type jiraResponse struct {
 			DisplayName string `json:"displayName"`
 		} `json:"creator"`
 		Attachment []struct {
-			Content string `json:"content"`
-            MimeType string `josn:"mimeType"`
+			Content  string `json:"content"`
+			MimeType string `json:"mimeType"`
 		} `json:"attachment"`
 	} `json:"fields"`
 }
@@ -88,28 +88,30 @@ func JiraExpandTicket(BotId string, config ConfigStruct) func(s *discordgo.Sessi
 			body, _ := ioutil.ReadAll(response.Body)
 			json.Unmarshal(body, &json_body)
 
-            description_no_image_name := imageNameRegexp.ReplaceAll([]byte(json_body.Fields.Description), []byte(""))
-            description_no_image_name = newLineRegexp.ReplaceAll(description_no_image_name, []byte("\n"))
+			description_no_image_name := imageNameRegexp.ReplaceAll([]byte(json_body.Fields.Description), []byte(""))
+			description_no_image_name = newLineRegexp.ReplaceAll(description_no_image_name, []byte("\n"))
 
 			message := discordgo.MessageEmbed{
 				Title:       json_body.Fields.Summary,
-				Description: "https://lenox-test.atlassian.net/browse/LW-" + ticket_id + "\n\n" + string(description_no_image_name) + "\n" + json_body.Fields.Creator.DisplayName,
+				Description: "https://lenox-test.atlassian.net/browse/LW-" + ticket_id + "\n\n" + string(description_no_image_name) + "\n\n" + json_body.Fields.Creator.DisplayName,
 			}
 
 			var discord_response []*discordgo.MessageEmbed
 			discord_response = append(discord_response, &message)
 
 			for _, att := range json_body.Fields.Attachment {
-                if !strings.Contains(att.MimeType, "image") {continue}
+				if !strings.Contains(att.MimeType, "image") {
+					continue
+				}
 
-                photo := getTicketPhoto(att.Content, config)
-                image := discordgo.MessageEmbed{
-                    Image: &discordgo.MessageEmbedImage{
-                        URL: photo.Request.Response.Header["Location"][0],
-                    },
-                }
+				photo := getTicketPhoto(att.Content, config)
+				image := discordgo.MessageEmbed{
+					Image: &discordgo.MessageEmbedImage{
+						URL: photo.Request.Response.Header["Location"][0],
+					},
+				}
 
-                discord_response = append(discord_response, &image)
+				discord_response = append(discord_response, &image)
 			}
 
 			s.ChannelMessageSendEmbeds(m.ChannelID, discord_response)
