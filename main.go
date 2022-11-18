@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/DiegoAraujoJS/go-bot/commands"
 	"github.com/DiegoAraujoJS/go-bot/utils"
 	"github.com/bwmarrin/discordgo"
@@ -33,6 +34,7 @@ func Start() {
 	BotId = user.ID
 	goBot.AddHandler(commands.HealthCheck(BotId, config, servers))
 	goBot.AddHandler(commands.JiraExpandTicket(BotId, config))
+	goBot.AddHandler(commands.GetTickets(BotId, config))
 	goBot.AddHandler(commands.ClockHealth(BotId))
 
 	err = goBot.Open()

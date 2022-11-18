@@ -2,8 +2,8 @@ package commands
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"regexp"
 	"strings"
@@ -12,21 +12,25 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-func getJiraTicket(ticket_id string, config ConfigStruct) *http.Response {
-
+func getJiraTicket(ticket_prefix string, ticket_id string, config ConfigStruct) (*http.Response, error) {
 	client := &http.Client{}
 
-	req, _ := http.NewRequest("GET", "https://"+config.Jira_user+":"+config.Jira_token+"@lenox-test.atlassian.net/rest/api/2/issue/LW-"+ticket_id, nil)
+	req, _ := http.NewRequest("GET", "https://"+config.Jira_user+":"+config.Jira_token+"@lenox-test.atlassian.net/rest/api/2/issue/"+ticket_prefix+"-"+ticket_id, nil)
 
 	req.Header.Set("Content-Type", "application/json")
 
 	response, err := client.Do(req)
 
 	if err != nil {
-		log.Fatalln(err)
+		defer func() {
+			if _err := recover(); _err != nil {
+				fmt.Println("recover", _err)
+			}
+		}()
+		return response, err
 	}
 
-	return response
+	return response, err
 }
 
 func getTicketPhoto(content string, config ConfigStruct) *http.Response {
@@ -39,17 +43,21 @@ func getTicketPhoto(content string, config ConfigStruct) *http.Response {
 
 	req.Header.Set("Content-Type", "application/json")
 
+	fmt.Println(content)
 	response, err := client.Do(req)
 
 	if err != nil {
-		log.Fatalln(err)
+		panic(err.Error())
 	}
 
 	return response
 }
 
-type jiraResponse struct {
+type JiraResponse struct {
 	Fields struct {
+		Status struct {
+			Name string `json:"name"`
+		} `json:"status"`
 		Summary     string `json:"summary"`
 		Description string `json:"description"`
 		Creator     struct {
@@ -60,9 +68,10 @@ type jiraResponse struct {
 			MimeType string `json:"mimeType"`
 		} `json:"attachment"`
 	} `json:"fields"`
+    Key string `json:"key"`
 }
 
-var jiraRegexp = regexp.MustCompile(`(?i)(LW-|ticket |LW )\d+`)
+var jiraRegexp = regexp.MustCompile(`(?i)([A-Z]+-|ticket )\d+`)
 var imageNameRegexp = regexp.MustCompile(`!.*!`)
 
 func JiraExpandTicket(BotId string, config ConfigStruct) func(s *discordgo.Session, m *discordgo.MessageCreate) {
@@ -80,11 +89,23 @@ func JiraExpandTicket(BotId string, config ConfigStruct) func(s *discordgo.Sessi
 			if len(split) == 1 {
 				split = strings.Split(string(match), " ")
 			}
-			ticket_id := split[len(split)-1]
+			prefix, ticket_id := split[0], split[len(split)-1]
+			if prefix == "ticket" {
+				prefix = "LW"
+			}
 
-			response := getJiraTicket(ticket_id, config)
+			response, err := getJiraTicket(prefix, ticket_id, config)
+			if err != nil {
+				return
+			}
+			defer response.Body.Close()
 
-			var json_body jiraResponse
+			if strings.Contains(response.Status, "404") {
+				s.ChannelMessageSend(m.ChannelID, "No existe el ticket "+ticket_id)
+				return
+			}
+
+			var json_body JiraResponse
 			body, _ := ioutil.ReadAll(response.Body)
 			json.Unmarshal(body, &json_body)
 
@@ -95,37 +116,52 @@ func JiraExpandTicket(BotId string, config ConfigStruct) func(s *discordgo.Sessi
 					Name: json_body.Fields.Creator.DisplayName,
 				},
 				Title:       json_body.Fields.Summary,
-				Description: "https://lenox-test.atlassian.net/browse/LW-" + ticket_id + "\n\n" + string(description_no_image_name),
+				Description: string(description_no_image_name),
+				URL:         "https://lenox-test.atlassian.net/browse/" + prefix + "-" + ticket_id,
+				Color:       16711680,
 			}
 
-			var discord_response []*discordgo.MessageEmbed
-			discord_response = append(discord_response, &message)
+			var discord_response = make([]*discordgo.MessageEmbed, len(json_body.Fields.Attachment)+1)
+			discord_response[0] = &message
 
-            wg := sync.WaitGroup{}
+			wg := sync.WaitGroup{}
 
-			for _, att := range json_body.Fields.Attachment {
+			for i, att := range json_body.Fields.Attachment {
 				if !strings.Contains(att.MimeType, "image") {
 					continue
 				}
 
-                wg.Add(1)
+				wg.Add(1)
 
-                go func (content string){
-                    photo := getTicketPhoto(content, config)
-                    image := discordgo.MessageEmbed{
-                        Image: &discordgo.MessageEmbedImage{
-                            URL: photo.Request.Response.Header["Location"][0],
-                        },
-                    }
+				go func(i int, content string) {
+					photo := getTicketPhoto(content, config)
+					image := discordgo.MessageEmbed{
+						Image: &discordgo.MessageEmbedImage{
+							URL: photo.Request.Response.Header["Location"][0],
+						},
+					}
 
-                    discord_response = append(discord_response, &image)
-                    wg.Done()
-                }(att.Content)
+					discord_response[i+1] = &image
+					wg.Done()
+				}(i, att.Content)
 			}
 
-            wg.Wait()
+			wg.Wait()
 
-			s.ChannelMessageSendEmbeds(m.ChannelID, discord_response)
+			var discord_response_clean = make([]*discordgo.MessageEmbed, 0, len(discord_response))
+
+			for _, v := range discord_response {
+				if v != nil {
+					discord_response_clean = append(discord_response_clean, v)
+				}
+			}
+
+			defer func() {
+				if _err := recover(); _err != nil {
+					fmt.Print("Error -->", _err)
+				}
+			}()
+			s.ChannelMessageSendEmbeds(m.ChannelID, discord_response_clean)
 		}
 	}
 }
