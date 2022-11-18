@@ -16,7 +16,8 @@ type MultipleJiraResponse struct {
 	Issues []JiraResponse `json:"issues"`
 }
 
-var askTicketsRegex = regexp.MustCompile(`!tickets=\w+`)
+var askTicketsRegex = regexp.MustCompile(`!tickets=(\w+|"[\w ]+")`)
+var quotedStateRegex = regexp.MustCompile(`"[\w ]+"`)
 
 func GetTickets(BotId string, config ConfigStruct) func(s *discordgo.Session, m *discordgo.MessageCreate) {
 	return func(s *discordgo.Session, m *discordgo.MessageCreate) {
@@ -28,6 +29,11 @@ func GetTickets(BotId string, config ConfigStruct) func(s *discordgo.Session, m 
 			return
 		}
 		status := strings.Split(string(match), "=")[1]
+		match_quotes := quotedStateRegex.Find([]byte(status))
+		if match_quotes != nil {
+			quoted_string := string(match_quotes)
+			status = quoted_string[1 : len(quoted_string)-1]
+		}
 		url := "https://" + config.Jira_user + ":" + config.Jira_token + "@lenox-test.atlassian.net/rest/api/3/search"
 		headers := map[string]string{
 			"Accept":       "application/json",

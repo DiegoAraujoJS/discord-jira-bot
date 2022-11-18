@@ -71,7 +71,7 @@ type JiraResponse struct {
     Key string `json:"key"`
 }
 
-var jiraRegexp = regexp.MustCompile(`(?i)([A-Z]+-|ticket )\d+`)
+var jiraRegexp = regexp.MustCompile(`([A-Z]+-|ticket )\d+`)
 var imageNameRegexp = regexp.MustCompile(`!.*!`)
 
 func JiraExpandTicket(BotId string, config ConfigStruct) func(s *discordgo.Session, m *discordgo.MessageCreate) {
