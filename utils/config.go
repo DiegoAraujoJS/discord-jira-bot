@@ -6,6 +6,17 @@ import (
 	"io/ioutil"
 )
 
+type ConfigStruct struct {
+	Token      string `json:"Token"`
+	BotPrefix  string `json:"BotPrefix"`
+	Jira_token string `json:"Jira_token"`
+	Jira_user  string `json:"Jira_user"`
+}
+
+var Config ConfigStruct
+var BotUserId string
+var Servers map[string]string
+
 func ReadConfig(json_name string, memory_store interface{}) error {
 
 	file, err := ioutil.ReadFile(json_name)
@@ -19,5 +30,3 @@ func ReadConfig(json_name string, memory_store interface{}) error {
 
 	return err
 }
-
-var Exported string

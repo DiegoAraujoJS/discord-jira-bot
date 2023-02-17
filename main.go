@@ -8,34 +8,31 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-var config commands.ConfigStruct
 
-var servers map[string]string
 
 var (
-	BotId string
 	goBot *discordgo.Session
 )
 
 func Start() {
-	goBot, err := discordgo.New("Bot " + config.Token)
+	goBot, err := discordgo.New("Bot " + utils.Config.Token)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
 
 	user, err := goBot.User("@me")
+    utils.BotUserId = user.ID
 
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
 
-	BotId = user.ID
-	goBot.AddHandler(commands.HealthCheck(BotId, config, servers))
-	goBot.AddHandler(commands.JiraExpandTicket(BotId, config))
-	goBot.AddHandler(commands.GetTickets(BotId, config))
-	goBot.AddHandler(commands.ClockHealth(BotId))
+	goBot.AddHandler(commands.HealthCheck)
+	goBot.AddHandler(commands.JiraExpandTicket)
+	goBot.AddHandler(commands.GetTickets)
+	goBot.AddHandler(commands.ClockHealth)
 
 	err = goBot.Open()
 
@@ -49,13 +46,13 @@ func Start() {
 // Mover estos valores a un json y agregarlo al gitignore.
 
 func main() {
-	err := utils.ReadConfig("./config.json", &config)
+	err := utils.ReadConfig("./config.json", &utils.Config)
 
 	if err != nil {
 		return
 	}
 
-	err = utils.ReadConfig("./healthcheck_routes.json", &servers)
+	err = utils.ReadConfig("./healthcheck_routes.json", &utils.Servers)
 
 	if err != nil {
 		return
