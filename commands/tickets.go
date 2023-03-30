@@ -62,9 +62,8 @@ func GetTickets(s *discordgo.Session, m *discordgo.MessageCreate) {
 
     req, _ := http.NewRequest("POST", url, bytes.NewBuffer(payload))
 
-    for h, v := range headers {
-        req.Header.Set(h, v)
-    }
+    for h, v := range headers { req.Header.Set(h, v) }
+
     resp, err := client.Do(req)
     if err != nil {
         panic(err.Error())
@@ -81,9 +80,7 @@ func GetTickets(s *discordgo.Session, m *discordgo.MessageCreate) {
 
     var message_body string
 
-    for _, v := range jira_response.Issues {
-        message_body += "\n" + v.Key + "\t" + v.Fields.Summary
-    }
+    for _, v := range jira_response.Issues { message_body += "\n" + v.Key + "\t" + v.Fields.Summary }
 
     s.ChannelMessageSend(m.ChannelID, message_body)
 }

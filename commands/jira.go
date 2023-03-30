@@ -149,11 +149,7 @@ func JiraExpandTicket(s *discordgo.Session, m *discordgo.MessageCreate) {
 
         var discord_response_clean = make([]*discordgo.MessageEmbed, 0, len(discord_response))
 
-        for _, v := range discord_response {
-            if v != nil {
-                discord_response_clean = append(discord_response_clean, v)
-            }
-        }
+        for _, v := range discord_response { if v != nil { discord_response_clean = append(discord_response_clean, v) } }
 
         defer func() {
             if _err := recover(); _err != nil {
