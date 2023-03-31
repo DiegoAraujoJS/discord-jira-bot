@@ -44,7 +44,6 @@ func getTicketPhoto(content string, config utils.ConfigStruct) *http.Response {
 
 	req.Header.Set("Content-Type", "application/json")
 
-	fmt.Println(content)
 	response, err := client.Do(req)
 
 	if err != nil {

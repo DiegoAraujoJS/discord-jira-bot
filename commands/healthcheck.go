@@ -1,7 +1,6 @@
 package commands
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 	"sync"
@@ -29,8 +28,6 @@ func HealthCheck(s *discordgo.Session, m *discordgo.MessageCreate) {
     if m.Author.ID == utils.BotUserId {
         return
     }
-
-    fmt.Println("content -->", m.Content)
 
     client := &http.Client{
         CheckRedirect: func(req *http.Request, via []*http.Request) error {
