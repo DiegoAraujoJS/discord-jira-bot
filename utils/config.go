@@ -11,6 +11,7 @@ type ConfigStruct struct {
 	BotPrefix  string `json:"BotPrefix"`
 	Jira_token string `json:"Jira_token"`
 	Jira_user  string `json:"Jira_user"`
+    Url        string `json:"Url"`
 }
 
 var Config ConfigStruct

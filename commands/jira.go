@@ -16,7 +16,7 @@ import (
 func getJiraTicket(ticket_prefix string, ticket_id string, config utils.ConfigStruct) (*http.Response, error) {
 	client := &http.Client{}
 
-	req, _ := http.NewRequest("GET", "https://"+config.Jira_user+":"+config.Jira_token+"@lenox-test.atlassian.net/rest/api/2/issue/"+ticket_prefix+"-"+ticket_id, nil)
+	req, _ := http.NewRequest("GET", "https://"+config.Jira_user+":"+config.Jira_token+"@" + config.Url + ".atlassian.net/rest/api/2/issue/"+ticket_prefix+"-"+ticket_id, nil)
 
 	req.Header.Set("Content-Type", "application/json")
 
@@ -98,6 +98,8 @@ func JiraExpandTicket(s *discordgo.Session, m *discordgo.MessageCreate) {
         }
         defer response.Body.Close()
 
+        fmt.Println(response)
+
         if strings.Contains(response.Status, "404") {
             s.ChannelMessageSend(m.ChannelID, "No existe el ticket "+ticket_id)
             return
@@ -115,7 +117,7 @@ func JiraExpandTicket(s *discordgo.Session, m *discordgo.MessageCreate) {
             },
             Title:       json_body.Fields.Summary,
             Description: string(description_no_image_name),
-            URL:         "https://lenox-test.atlassian.net/browse/" + prefix + "-" + ticket_id,
+            URL:         "https://" + utils.Config.Url + ".atlassian.net/browse/" + prefix + "-" + ticket_id,
             Color:       16711680,
         }
 
@@ -155,7 +157,8 @@ func JiraExpandTicket(s *discordgo.Session, m *discordgo.MessageCreate) {
                 fmt.Print("Error -->", _err)
             }
         }()
+
+        fmt.Println(discord_response_clean)
         s.ChannelMessageSendEmbeds(m.ChannelID, discord_response_clean)
     }
-
 }

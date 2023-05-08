@@ -11,7 +11,6 @@ import (
 )
 
 func getReponse (k string, v string, client *http.Client, wg *sync.WaitGroup, response *string) {
-    wg.Add(1)
     then := time.Now()
     _, err := client.Get(v)
     time_elapsed := time.Since(then)
@@ -41,8 +40,10 @@ func HealthCheck(s *discordgo.Session, m *discordgo.MessageCreate) {
 
         var wg = sync.WaitGroup{}
 
-        for k, v := range utils.Servers { go getReponse(k, v, client, &wg, &response) }
-
+        for k, v := range utils.Servers {
+            wg.Add(1)
+            go getReponse(k, v, client, &wg, &response)
+        };
         wg.Wait()
 
         _, _ = s.ChannelMessageSend(m.ChannelID, response)
