@@ -15,14 +15,19 @@ var (
 )
 
 func Start() {
+    fmt.Println("Starting bot")
 	goBot, err := discordgo.New("Bot " + utils.BotToken)
+    fmt.Println("Bot token: ", utils.BotToken)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
 
+
 	user, err := goBot.User("@me")
+    fmt.Println("Bot user: ", user.ID)
     utils.BotUserId = user.ID
+
 
 	if err != nil {
 		fmt.Println(err.Error())

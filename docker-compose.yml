@@ -1,0 +1,3 @@
+services:
+  bot:
+    image: 337304460944.dkr.ecr.us-east-1.amazonaws.com/lenox:latest
