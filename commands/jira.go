@@ -13,10 +13,11 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-func getJiraTicket(ticket_prefix string, ticket_id string, config utils.ConfigStruct) (*http.Response, error) {
+func getJiraTicket(ticket_prefix string, ticket_id string) (*http.Response, error) {
 	client := &http.Client{}
 
-	req, _ := http.NewRequest("GET", "https://"+config.Jira_user+":"+config.Jira_token+"@" + config.Url + ".atlassian.net/rest/api/2/issue/"+ticket_prefix+"-"+ticket_id, nil)
+    url := utils.Endpoint + ".atlassian.net/rest/api/2/issue/"+ticket_prefix+"-"+ticket_id
+	req, _ := http.NewRequest("GET", url, nil)
 
 	req.Header.Set("Content-Type", "application/json")
 
@@ -34,13 +35,13 @@ func getJiraTicket(ticket_prefix string, ticket_id string, config utils.ConfigSt
 	return response, err
 }
 
-func getTicketPhoto(content string, config utils.ConfigStruct) *http.Response {
+func getTicketPhoto(content string) *http.Response {
 
 	content = strings.Split(content, "//")[1]
 
 	client := &http.Client{}
 
-	req, _ := http.NewRequest("GET", "https://"+config.Jira_user+":"+config.Jira_token+"@"+content, nil)
+	req, _ := http.NewRequest("GET", "https://"+utils.Jira_user+":"+utils.Jira_token+"@"+content, nil)
 
 	req.Header.Set("Content-Type", "application/json")
 
@@ -92,13 +93,11 @@ func JiraExpandTicket(s *discordgo.Session, m *discordgo.MessageCreate) {
             prefix = "LW"
         }
 
-        response, err := getJiraTicket(prefix, ticket_id, utils.Config)
+        response, err := getJiraTicket(prefix, ticket_id)
         if err != nil {
             return
         }
         defer response.Body.Close()
-
-        fmt.Println(response)
 
         if strings.Contains(response.Status, "404") {
             s.ChannelMessageSend(m.ChannelID, "No existe el ticket "+ticket_id)
@@ -117,7 +116,7 @@ func JiraExpandTicket(s *discordgo.Session, m *discordgo.MessageCreate) {
             },
             Title:       json_body.Fields.Summary,
             Description: string(description_no_image_name),
-            URL:         "https://" + utils.Config.Url + ".atlassian.net/browse/" + prefix + "-" + ticket_id,
+            URL:         "https://" + utils.Url + ".atlassian.net/browse/" + prefix + "-" + ticket_id,
             Color:       16711680,
         }
 
@@ -134,7 +133,7 @@ func JiraExpandTicket(s *discordgo.Session, m *discordgo.MessageCreate) {
             wg.Add(1)
 
             go func(i int, content string) {
-                photo := getTicketPhoto(content, utils.Config)
+                photo := getTicketPhoto(content)
                 image := discordgo.MessageEmbed{
                     Image: &discordgo.MessageEmbedImage{
                         URL: photo.Request.Response.Header["Location"][0],
@@ -158,7 +157,6 @@ func JiraExpandTicket(s *discordgo.Session, m *discordgo.MessageCreate) {
             }
         }()
 
-        fmt.Println(discord_response_clean)
         s.ChannelMessageSendEmbeds(m.ChannelID, discord_response_clean)
     }
 }

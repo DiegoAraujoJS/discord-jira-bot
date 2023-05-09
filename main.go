@@ -15,7 +15,7 @@ var (
 )
 
 func Start() {
-	goBot, err := discordgo.New("Bot " + utils.Config.Token)
+	goBot, err := discordgo.New("Bot " + utils.BotToken)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
@@ -47,13 +47,7 @@ func Start() {
 // Mover estos valores a un json y agregarlo al gitignore.
 
 func main() {
-	err := utils.ReadConfig("./config.json", &utils.Config)
-
-	if err != nil {
-		return
-	}
-
-	err = utils.ReadConfig("./healthcheck_routes.json", &utils.Servers)
+    err := utils.ReadConfig()
 
 	if err != nil {
 		return

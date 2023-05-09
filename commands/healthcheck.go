@@ -35,7 +35,7 @@ func HealthCheck(s *discordgo.Session, m *discordgo.MessageCreate) {
         Timeout: 5 * time.Second,
     }
 
-    if m.Content == utils.Config.BotPrefix+"upstatus" {
+    if m.Content == utils.BotPrefix + "upstatus" {
         var response = ""
 
         var wg = sync.WaitGroup{}

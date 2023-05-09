@@ -33,7 +33,7 @@ func GetTickets(s *discordgo.Session, m *discordgo.MessageCreate) {
         quoted_string := string(match_quotes)
         status = quoted_string[1 : len(quoted_string)-1]
     }
-    url := "https://" + utils.Config.Jira_user + ":" + utils.Config.Jira_token + "@" + utils.Config.Url + ".atlassian.net/rest/api/3/search"
+    url := utils.Endpoint + ".atlassian.net/rest/api/3/search"
     headers := map[string]string{
         "Accept":       "application/json",
         "Content-Type": "application/json",
@@ -47,7 +47,6 @@ func GetTickets(s *discordgo.Session, m *discordgo.MessageCreate) {
             "operations",
         },
         "jql": "project = " + project + " AND status = \"" + status + "\" ORDER BY created DESC",
-        // "maxResults":   3,
         "fieldsByKeys": false,
         "fields": []string{
             "status",
@@ -73,6 +72,7 @@ func GetTickets(s *discordgo.Session, m *discordgo.MessageCreate) {
     var jira_response MultipleJiraResponse
     json.Unmarshal(body, &jira_response)
     var message_body string
+
     for _, v := range jira_response.Issues { message_body += "\n" + v.Key + "\t" + v.Fields.Summary }
 
     s.ChannelMessageSend(m.ChannelID, message_body)
