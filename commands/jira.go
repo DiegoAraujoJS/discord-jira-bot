@@ -84,6 +84,8 @@ func JiraExpandTicket(s *discordgo.Session, m *discordgo.MessageCreate) {
 
     if match != nil {
 
+        go s.MessageReactionAdd(m.ChannelID, m.ID, "👀")
+
         split := strings.Split(string(match), "-")
         if len(split) == 1 {
             split = strings.Split(string(match), " ")
@@ -157,6 +159,6 @@ func JiraExpandTicket(s *discordgo.Session, m *discordgo.MessageCreate) {
             }
         }()
 
-        s.ChannelMessageSendEmbeds(m.ChannelID, discord_response_clean)
+        go s.ChannelMessageSendEmbeds(m.ChannelID, discord_response_clean)
     }
 }

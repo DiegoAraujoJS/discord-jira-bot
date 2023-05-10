@@ -16,6 +16,8 @@ var BotUserId string
 var BotToken string
 var Servers map[string]string
 
+var Secondary map[string]string
+
 func ReadConfig() error {
 
 	file, err := ioutil.ReadFile("./config.json")

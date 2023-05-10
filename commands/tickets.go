@@ -19,6 +19,12 @@ type MultipleJiraResponse struct {
 var askTicketsRegex = regexp.MustCompile(`!tickets-\w+-(\w+|"[\w ]+")`)
 var quotedStateRegex = regexp.MustCompile(`"[\w ]+"`)
 
+func getTicketUrl(ticket_key string) string {
+    ticket_prefix := strings.Split(ticket_key, "-")[0]
+    ticket_id := strings.Split(ticket_key, "-")[1]
+    return utils.Endpoint + ".atlassian.net/browse/" + ticket_prefix + "-" + ticket_id
+}
+
 func GetTickets(s *discordgo.Session, m *discordgo.MessageCreate) {
     if m.Author.ID == utils.BotUserId {
         return
@@ -27,6 +33,7 @@ func GetTickets(s *discordgo.Session, m *discordgo.MessageCreate) {
     if match == nil {
         return
     }
+    go s.MessageReactionAdd(m.ChannelID, m.ID, "📝")
     status := strings.Split(string(match), "-")[2]
     match_quotes := quotedStateRegex.Find([]byte(status))
     if match_quotes != nil {
@@ -73,8 +80,17 @@ func GetTickets(s *discordgo.Session, m *discordgo.MessageCreate) {
     json.Unmarshal(body, &jira_response)
     var message_body string
 
-    for _, v := range jira_response.Issues { message_body += "\n" + v.Key + "\t" + v.Fields.Summary }
+    var count int
 
-    s.ChannelMessageSend(m.ChannelID, message_body)
+    for _, v := range jira_response.Issues {
+        if count == 13 {break}
+        count += 1
+        message_body += "\n\n" + "["+v.Key+"]"+"("+getTicketUrl(v.Key)+")" + "\t" + v.Fields.Summary
+    }
+
+    if message_body == "" { message_body = "No se encontraron tickets de " + project + " en " + status  }
+    s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
+        Description: message_body,
+    })
 }
 
