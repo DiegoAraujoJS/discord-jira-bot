@@ -25,9 +25,11 @@ func getReponse (k string, v string, client *http.Client, wg *sync.WaitGroup, re
 
 func HealthCheck(s *discordgo.Session, m *discordgo.MessageCreate) {
 
-    if m.Author.ID == utils.BotUserId {
+    if m.Author.ID == utils.BotUserId || m.Content != utils.BotPrefix + "upstatus" {
         return
     }
+
+    go s.MessageReactionAdd(m.ChannelID, m.ID, "📡")
 
     client := &http.Client{
         CheckRedirect: func(req *http.Request, via []*http.Request) error {
@@ -36,25 +38,21 @@ func HealthCheck(s *discordgo.Session, m *discordgo.MessageCreate) {
         Timeout: 5 * time.Second,
     }
 
-    if m.Content == utils.BotPrefix + "upstatus" {
-        s.MessageReactionAdd(m.ChannelID, m.ID, "📡")
-        var response = ""
-        var ok = true
+    var response = ""
+    var ok = true
+    var wg = sync.WaitGroup{}
 
-        var wg = sync.WaitGroup{}
+    for k, v := range utils.Servers {
+        wg.Add(1)
+        go getReponse(k, v, client, &wg, &response, &ok)
+    };
+    wg.Wait()
 
-        for k, v := range utils.Servers {
-            wg.Add(1)
-            go getReponse(k, v, client, &wg, &response, &ok)
-        };
-        wg.Wait()
+    message, _ := s.ChannelMessageSend(m.ChannelID, response)
 
-        message, _ := s.ChannelMessageSend(m.ChannelID, response)
-
-        if ok {
-            go s.MessageReactionAdd(m.ChannelID, message.ID, "😎")
-            return
-        }
-        go s.MessageReactionAdd(m.ChannelID, message.ID, "😱")
+    if ok {
+        go s.MessageReactionAdd(m.ChannelID, message.ID, "😎")
+        return
     }
+    go s.MessageReactionAdd(m.ChannelID, message.ID, "😱")
 }

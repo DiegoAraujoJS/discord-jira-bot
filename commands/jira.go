@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
-	"sync"
 
 	"github.com/DiegoAraujoJS/go-bot/utils"
 	"github.com/bwmarrin/discordgo"
@@ -33,25 +32,6 @@ func getJiraTicket(ticket_prefix string, ticket_id string) (*http.Response, erro
 	}
 
 	return response, err
-}
-
-func getTicketPhoto(content string) *http.Response {
-
-	content = strings.Split(content, "//")[1]
-
-	client := &http.Client{}
-
-	req, _ := http.NewRequest("GET", "https://"+utils.Jira_user+":"+utils.Jira_token+"@"+content, nil)
-
-	req.Header.Set("Content-Type", "application/json")
-
-	response, err := client.Do(req)
-
-	if err != nil {
-		panic(err.Error())
-	}
-
-	return response
 }
 
 type JiraResponse struct {
@@ -122,43 +102,12 @@ func JiraExpandTicket(s *discordgo.Session, m *discordgo.MessageCreate) {
             Color:       16711680,
         }
 
-        var discord_response = make([]*discordgo.MessageEmbed, len(json_body.Fields.Attachment)+1)
-        discord_response[0] = &message
-
-        wg := sync.WaitGroup{}
-
-        for i, att := range json_body.Fields.Attachment {
-            if !strings.Contains(att.MimeType, "image") {
-                continue
-            }
-
-            wg.Add(1)
-
-            go func(i int, content string) {
-                photo := getTicketPhoto(content)
-                image := discordgo.MessageEmbed{
-                    Image: &discordgo.MessageEmbedImage{
-                        URL: photo.Request.Response.Header["Location"][0],
-                    },
-                }
-
-                discord_response[i+1] = &image
-                wg.Done()
-                }(i, att.Content)
-        }
-
-        wg.Wait()
-
-        var discord_response_clean = make([]*discordgo.MessageEmbed, 0, len(discord_response))
-
-        for _, v := range discord_response { if v != nil { discord_response_clean = append(discord_response_clean, v) } }
-
         defer func() {
             if _err := recover(); _err != nil {
                 fmt.Print("Error -->", _err)
             }
         }()
 
-        go s.ChannelMessageSendEmbeds(m.ChannelID, discord_response_clean)
+        go s.ChannelMessageSendEmbed(m.ChannelID, &message)
     }
 }
