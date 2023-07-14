@@ -3,6 +3,7 @@ package commands
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"regexp"
@@ -40,11 +41,6 @@ func GetTickets(s *discordgo.Session, m *discordgo.MessageCreate) {
         quoted_string := string(match_quotes)
         status = quoted_string[1 : len(quoted_string)-1]
     }
-    url := utils.Endpoint + ".atlassian.net/rest/api/3/search"
-    headers := map[string]string{
-        "Accept":       "application/json",
-        "Content-Type": "application/json",
-    }
     project := strings.Split(string(match), "-")[1]
 
     _payload := map[string]interface{}{
@@ -65,13 +61,21 @@ func GetTickets(s *discordgo.Session, m *discordgo.MessageCreate) {
     payload, _ := json.Marshal(_payload)
 
     client := &http.Client{}
-    req, _ := http.NewRequest("POST", url, bytes.NewBuffer(payload))
+    req, _ := http.NewRequest("POST", utils.Endpoint + ".atlassian.net/rest/api/3/search", bytes.NewBuffer(payload))
 
+    headers := map[string]string{
+        "Accept":       "application/json",
+        "Content-Type": "application/json",
+    }
     for h, v := range headers { req.Header.Set(h, v) }
 
     resp, err := client.Do(req)
     if err != nil {
-        panic(err.Error())
+        s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
+            Description: "Hubo un error al intentar conectarse con jira",
+        })
+        fmt.Println(err.Error())
+        return
     }
     defer resp.Body.Close()
 
@@ -80,12 +84,8 @@ func GetTickets(s *discordgo.Session, m *discordgo.MessageCreate) {
     json.Unmarshal(body, &jira_response)
     var message_body string
 
-    var count int
-
-    for _, v := range jira_response.Issues {
-        if count == 13 {break}
-        count += 1
-        message_body += "\n\n" + "["+v.Key+"]"+"("+getTicketUrl(v.Key)+")" + "\t" + v.Fields.Summary
+    for i := 0; i < len(jira_response.Issues) && i < 13; i++ {
+        message_body += "\n\n" + "["+jira_response.Issues[i].Key+"]"+"("+getTicketUrl(jira_response.Issues[i].Key)+")" + "\t" + jira_response.Issues[i].Fields.Summary
     }
 
     if message_body == "" { message_body = "No se encontraron tickets de " + project + " en " + status  }
