@@ -42,7 +42,6 @@ func Start() {
 	goBot.AddHandler(commands.GetTickets)
 	goBot.AddHandler(commands.ClockHealth)
     goBot.AddHandler(commands.GetCommands)
-    goBot.AddHandler(commands.ReactionsHandler)
 
 	err = goBot.Open()
 
@@ -64,5 +63,6 @@ func main() {
 
 	Start()
 
-	<-make(chan struct{})
+    halt := make(chan struct{})
+    <-halt
 }

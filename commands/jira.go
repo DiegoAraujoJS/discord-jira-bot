@@ -62,12 +62,13 @@ func JiraExpandTicket(s *discordgo.Session, m *discordgo.MessageCreate) {
 
     response, err := getJiraTicket(prefix, ticket_id)
     if err != nil {
+        s.ChannelMessageSend(m.ChannelID, "Error al obtener de Jira el ticket "+ticket_id + " del proyecto " + prefix)
         return
     }
     defer response.Body.Close()
 
     if strings.Contains(response.Status, "404") {
-        s.ChannelMessageSend(m.ChannelID, "No existe el ticket "+ticket_id)
+        s.ChannelMessageSend(m.ChannelID, "No existe el ticket "+ticket_id + " del proyecto " + prefix)
         return
     }
 
