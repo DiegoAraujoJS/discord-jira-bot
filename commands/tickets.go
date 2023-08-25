@@ -20,14 +20,15 @@ type MultipleJiraResponse struct {
 var askTicketsRegex = regexp.MustCompile(`!tickets-\w+-(\w+|"[\w ]+")`)
 var quotedStateRegex = regexp.MustCompile(`"[\w ]+"`)
 
-func getTicketUrl(ticket_key string) string {
+func getTicketUrl(ticket_key string, guildId string) string {
+    guildConfiguration := utils.GetGuildConfig(guildId)
     ticket_prefix := strings.Split(ticket_key, "-")[0]
     ticket_id := strings.Split(ticket_key, "-")[1]
-    return utils.Endpoint + ".atlassian.net/browse/" + ticket_prefix + "-" + ticket_id
+    return guildConfiguration.JiraEndpoint + ".atlassian.net/browse/" + ticket_prefix + "-" + ticket_id
 }
 
 func GetTickets(s *discordgo.Session, m *discordgo.MessageCreate) {
-    if m.Author.ID == utils.BotUserId {
+    if m.Author.ID == utils.GetBotUserId() {
         return
     }
     match := askTicketsRegex.Find([]byte(m.Content))
@@ -61,7 +62,8 @@ func GetTickets(s *discordgo.Session, m *discordgo.MessageCreate) {
     payload, _ := json.Marshal(_payload)
 
     client := &http.Client{}
-    req, _ := http.NewRequest("POST", utils.Endpoint + ".atlassian.net/rest/api/3/search", bytes.NewBuffer(payload))
+    guildConfiguration := utils.GetGuildConfig(m.GuildID)
+    req, _ := http.NewRequest("POST", guildConfiguration.JiraEndpoint + ".atlassian.net/rest/api/3/search", bytes.NewBuffer(payload))
 
     headers := map[string]string{
         "Accept":       "application/json",
@@ -85,7 +87,7 @@ func GetTickets(s *discordgo.Session, m *discordgo.MessageCreate) {
     var message_body string
 
     for i := 0; i < len(jira_response.Issues) && i < 13; i++ {
-        message_body += "\n\n" + "["+jira_response.Issues[i].Key+"]"+"("+getTicketUrl(jira_response.Issues[i].Key)+")" + "\t" + jira_response.Issues[i].Fields.Summary
+        message_body += "\n\n" + "["+jira_response.Issues[i].Key+"]"+"("+getTicketUrl(jira_response.Issues[i].Key, m.GuildID)+")" + "\t" + jira_response.Issues[i].Fields.Summary
     }
 
     if message_body == "" { message_body = "No se encontraron tickets de " + project + " en " + status  }

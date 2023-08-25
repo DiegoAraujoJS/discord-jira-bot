@@ -15,19 +15,21 @@ var (
 )
 
 func Start() {
+}
+
+// Mover estos valores a un json y agregarlo al gitignore.
+
+func main() {
     fmt.Println("Starting bot")
-	goBot, err := discordgo.New("Bot " + utils.BotToken)
-    fmt.Println("Bot token: ", utils.BotToken)
+	goBot, err := discordgo.New("Bot " + utils.GetBotToken())
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
 
-
 	user, err := goBot.User("@me")
     fmt.Println("Bot user: ", user.ID)
-    utils.BotUserId = user.ID
-
+    utils.SetBotUserId(user.ID)
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -50,18 +52,6 @@ func Start() {
 		return
 	}
 	fmt.Println("bot is running")
-}
-
-// Mover estos valores a un json y agregarlo al gitignore.
-
-func main() {
-    err := utils.ReadConfig()
-
-	if err != nil {
-		return
-	}
-
-	Start()
 
     halt := make(chan struct{})
     <-halt
