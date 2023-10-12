@@ -8,8 +8,6 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-
-
 var (
 	goBot *discordgo.Session
 )
@@ -18,11 +16,11 @@ func Start() {
     fmt.Println("Starting bot")
 	goBot, err := discordgo.New("Bot " + utils.BotToken)
     fmt.Println("Bot token: ", utils.BotToken)
+    fmt.Println("Jira token: ", utils.Jira_token)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
-
 
 	user, err := goBot.User("@me")
     fmt.Println("Bot user: ", user.ID)
