@@ -32,9 +32,6 @@ func Start() {
 		return
 	}
 
-    goBot.AddHandler(func(s *discordgo.Session, m *discordgo.MessageCreate) {
-        fmt.Printf("Author: %s, Message: %s, Channell: %s\n", m.Author.Username, m.Content, m.ChannelID)
-    })
 	goBot.AddHandler(commands.HealthCheck)
 	goBot.AddHandler(commands.JiraExpandTicket)
 	goBot.AddHandler(commands.GetTickets)
