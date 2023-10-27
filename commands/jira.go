@@ -32,7 +32,7 @@ type JiraResponse struct {
 func getJiraTicket(ticket_prefix string, ticket_id string) (*http.Response, error) {
 	client := &http.Client{}
 
-    url := utils.Endpoint + ".atlassian.net/rest/api/2/issue/"+ticket_prefix+"-"+ticket_id
+  url := utils.Endpoint + ".atlassian.net/rest/api/2/issue/"+ticket_prefix+"-"+ticket_id
 	req, _ := http.NewRequest("GET", url, nil)
 
 	req.Header.Set("Content-Type", "application/json")
@@ -67,7 +67,7 @@ func JiraExpandTicket(s *discordgo.Session, m *discordgo.MessageCreate) {
     defer response.Body.Close()
 
     if strings.Contains(response.Status, "404") {
-        s.ChannelMessageSend(m.ChannelID, "No existe el ticket "+ticket_id)
+        s.ChannelMessageSend(m.ChannelID, "No existe el ticket " + prefix + "-" + ticket_id)
         return
     }
 
@@ -77,7 +77,7 @@ func JiraExpandTicket(s *discordgo.Session, m *discordgo.MessageCreate) {
 
     description_no_image_name := imageNameRegexp.ReplaceAll([]byte(json_body.Fields.Description), []byte(""))
 
-    message := discordgo.MessageEmbed{
+    s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
         Author: &discordgo.MessageEmbedAuthor{
             Name: json_body.Fields.Creator.DisplayName,
         },
@@ -85,7 +85,5 @@ func JiraExpandTicket(s *discordgo.Session, m *discordgo.MessageCreate) {
         Description: string(description_no_image_name),
         URL:         "https://" + utils.Url + ".atlassian.net/browse/" + prefix + "-" + ticket_id,
         Color:       16711680,
-    }
-
-    s.ChannelMessageSendEmbed(m.ChannelID, &message)
+    })
 }
