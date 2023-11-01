@@ -45,7 +45,7 @@ var jiraRegexp = regexp.MustCompile(`([A-Z]+-|ticket )\d+`)
 var imageNameRegexp = regexp.MustCompile(`!.*!`)
 
 func JiraExpandTicket(s *discordgo.Session, m *discordgo.MessageCreate) {
-    if m.Author.ID == utils.BotUserId { return }
+    if m.Author.Bot { return }
 
     defer func() {
         if err := recover(); err != nil {

@@ -38,6 +38,7 @@ func Start() {
 	goBot.AddHandler(commands.ClockHealth)
     goBot.AddHandler(commands.GetCommands)
     goBot.AddHandler(commands.ReactionsHandler)
+    goBot.AddHandler(commands.GetGuildData)
 
 	err = goBot.Open()
 

@@ -27,7 +27,7 @@ func getTicketUrl(ticket_key string) string {
 }
 
 func GetTickets(s *discordgo.Session, m *discordgo.MessageCreate) {
-    if m.Author.ID == utils.BotUserId {
+    if m.Author.Bot {
         return
     }
     match := askTicketsRegex.Find([]byte(m.Content))

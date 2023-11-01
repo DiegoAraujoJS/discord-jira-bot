@@ -6,7 +6,7 @@ import (
 )
 
 func ReactionsHandler(s *discordgo.Session, m *discordgo.MessageReactionAdd) {
-    if m.UserID == s.State.User.ID {
+    if m.Member.User.Bot {
         return
     }
 

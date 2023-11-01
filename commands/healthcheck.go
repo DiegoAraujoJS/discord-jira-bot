@@ -25,7 +25,7 @@ func getReponse (k string, v string, client *http.Client, wg *sync.WaitGroup, re
 
 func HealthCheck(s *discordgo.Session, m *discordgo.MessageCreate) {
 
-    if m.Author.ID == utils.BotUserId || m.Content != utils.BotPrefix + "upstatus" {
+    if m.Author.Bot || m.Content != utils.BotPrefix + "upstatus" {
         return
     }
 

@@ -7,14 +7,13 @@ import (
 	"strings"
 	"time"
 
-	"github.com/DiegoAraujoJS/go-bot/utils"
 	"github.com/bwmarrin/discordgo"
 )
 
 var clockRegexp = regexp.MustCompile(`SN=[^ ]+`)
 
 func ClockHealth(s *discordgo.Session, m *discordgo.MessageCreate) {
-    if m.Author.ID == utils.BotUserId {
+    if m.Author.Bot {
         return
     }
 
