@@ -2,6 +2,7 @@ package commands
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"regexp"
@@ -32,7 +33,7 @@ type JiraResponse struct {
 func getJiraTicket(ticket_prefix string, ticket_id string) (*http.Response, error) {
 	client := &http.Client{}
 
-  url := utils.Endpoint + ".atlassian.net/rest/api/2/issue/"+ticket_prefix+"-"+ticket_id
+    url := utils.Endpoint + ".atlassian.net/rest/api/2/issue/"+ticket_prefix+"-"+ticket_id
 	req, _ := http.NewRequest("GET", url, nil)
 
 	req.Header.Set("Content-Type", "application/json")
@@ -46,10 +47,23 @@ var imageNameRegexp = regexp.MustCompile(`!.*!`)
 func JiraExpandTicket(s *discordgo.Session, m *discordgo.MessageCreate) {
     if m.Author.ID == utils.BotUserId { return }
 
+    defer func() {
+        if err := recover(); err != nil {
+            fmt.Println("Recover from panic; Error ->", err)
+        }
+    }()
+
     match := jiraRegexp.Find([]byte(m.Content))
     if match == nil { return }
 
-    go s.MessageReactionAdd(m.ChannelID, m.ID, "👀")
+    go func() {
+        defer func() {
+            if err := recover(); err != nil {
+                fmt.Println("Recover from panic while sending reaction. Error ->", err)
+            }
+        }()
+        s.MessageReactionAdd(m.ChannelID, m.ID, "👀")
+    }()
 
     split := strings.Split(string(match), "-")
     if len(split) == 1 {
@@ -75,14 +89,12 @@ func JiraExpandTicket(s *discordgo.Session, m *discordgo.MessageCreate) {
     body, _ := ioutil.ReadAll(response.Body)
     json.Unmarshal(body, &json_body)
 
-    description_no_image_name := imageNameRegexp.ReplaceAll([]byte(json_body.Fields.Description), []byte(""))
-
     s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
         Author: &discordgo.MessageEmbedAuthor{
             Name: json_body.Fields.Creator.DisplayName,
         },
         Title:       json_body.Fields.Summary,
-        Description: string(description_no_image_name),
+        Description: string(imageNameRegexp.ReplaceAll([]byte(json_body.Fields.Description), []byte(""))),
         URL:         "https://" + utils.Url + ".atlassian.net/browse/" + prefix + "-" + ticket_id,
         Color:       16711680,
     })
