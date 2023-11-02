@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/DiegoAraujoJS/go-bot/utils"
 	"github.com/bwmarrin/discordgo"
@@ -52,6 +53,10 @@ func JiraExpandTicket(s *discordgo.Session, m *discordgo.MessageCreate) {
             fmt.Println("Recover from panic; Error ->", err)
         }
     }()
+
+    utils.ExposeUsageDetails("jira-ticket", func(record string, records map[string]int) {
+        fmt.Printf("%v\tFetch jira ticket.\tUsage: %v", time.Now().Add(-3 * time.Hour).Format("2022-12-12 15:32:12") + "\tGMT -3", records[record])
+    })
 
     match := jiraRegexp.Find([]byte(m.Content))
     if match == nil { return }
