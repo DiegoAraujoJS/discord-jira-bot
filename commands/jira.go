@@ -58,7 +58,7 @@ func JiraExpandTicket(s *discordgo.Session, m *discordgo.MessageCreate) {
     if match == nil { return }
 
     utils.ExposeUsageDetails("jira-ticket", func(record string, records map[string]int) {
-        fmt.Printf("%v\tFetch jira ticket.\tUsage: %v", time.Now().Add(-3 * time.Hour).Format("2022-12-12 15:32:12") + "\tGMT -3", records[record])
+        fmt.Printf("%v\tFetch jira ticket.\tChannel: %v\tUsage: %v", time.Now().Add(-3 * time.Hour).String() + "\tGMT -3\n", m.ChannelID, records[record])
     })
 
     go func() {
