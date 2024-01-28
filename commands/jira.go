@@ -50,7 +50,7 @@ func JiraExpandTicket(s *discordgo.Session, m *discordgo.MessageCreate) {
 
     defer func() {
         if err := recover(); err != nil {
-            fmt.Println("Recover from panic; Error ->", err)
+            fmt.Println("recover from panic", err)
         }
     }()
 
@@ -64,7 +64,7 @@ func JiraExpandTicket(s *discordgo.Session, m *discordgo.MessageCreate) {
     go func() {
         defer func() {
             if err := recover(); err != nil {
-                fmt.Println("Recover from panic while sending reaction. Error ->", err)
+                fmt.Println("recover from panic while sending reaction.", err)
             }
         }()
         s.MessageReactionAdd(m.ChannelID, m.ID, "👀")
@@ -90,16 +90,16 @@ func JiraExpandTicket(s *discordgo.Session, m *discordgo.MessageCreate) {
         return
     }
 
-    var json_body JiraResponse
+    var jiraResponse JiraResponse
     body, _ := ioutil.ReadAll(response.Body)
-    json.Unmarshal(body, &json_body)
+    json.Unmarshal(body, &jiraResponse)
 
     s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
         Author: &discordgo.MessageEmbedAuthor{
-            Name: json_body.Fields.Creator.DisplayName,
+            Name: jiraResponse.Fields.Creator.DisplayName,
         },
-        Title:       json_body.Fields.Summary,
-        Description: string(imageNameRegexp.ReplaceAll([]byte(json_body.Fields.Description), []byte(""))),
+        Title:       jiraResponse.Fields.Summary,
+        Description: string(imageNameRegexp.ReplaceAll([]byte(jiraResponse.Fields.Description), []byte(""))),
         URL:         "https://" + utils.Url + ".atlassian.net/browse/" + prefix + "-" + ticket_id,
         Color:       16711680,
     })
